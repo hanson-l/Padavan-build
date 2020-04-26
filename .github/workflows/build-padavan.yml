@@ -1,0 +1,46 @@
+name: Build Padavan
+
+on:
+  release:
+    types: [published]
+  watch:
+    types: [started]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo apt update
+        sudo apt install -y unzip libtool-bin curl cmake gperf gawk flex bison nano xxd \
+        cpio git python-docutils gettext automake autopoint texinfo build-essential help2man \
+        pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget
+
+    - name: Clone source code
+      run: |
+        sudo git clone --depth=1 https://github.com/hanwckf/rt-n56u.git /opt/rt-n56u
+        cd /opt/rt-n56u/toolchain-mipsel
+        sudo ./dl_toolchain.sh
+
+    - name: Build Firmware
+      run: |
+        sudo mv -f PSG1218_nano.config /opt/rt-n56u/trunk/configs/templates/PSG1218_nano.config
+        cd /opt/rt-n56u/trunk
+        sudo ./clear_tree
+        sudo ./build_firmware_modify PSG1218_nano
+        sudo mkdir -p /opt/images
+        sudo mv -f images/*.trx /opt/images/
+
+    - name : Upload firmware
+      uses: actions/upload-artifact@master
+      with:
+        name: Padavan-firmware
+        path: /opt/images
