@@ -32,12 +32,12 @@ jobs:
 
     - name: Build Firmware
       run: |
-        sudo mv -f PSG1218_nano.config /opt/rt-n56u/trunk/configs/templates/PSG1218_nano.config
+        mv -f PSG1218_nano.config /opt/rt-n56u/trunk/configs/templates/PSG1218_nano.config
         cd /opt/rt-n56u/trunk
-        sudo ./clear_tree
-        sudo ./build_firmware_modify PSG1218_nano
-        sudo mkdir -p /opt/images
-        sudo mv -f images/*.trx /opt/images/
+        ./clear_tree
+        ./build_firmware_modify PSG1218_nano
+        mkdir -p /opt/images
+        mv -f images/*.trx /opt/images/
 
     - name : Upload firmware
       uses: actions/upload-artifact@master
