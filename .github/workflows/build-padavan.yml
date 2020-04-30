@@ -19,23 +19,23 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo apt update
-        sudo apt install -y unzip libtool-bin curl cmake gperf gawk flex bison nano xxd \
+        apt update
+        apt install -y unzip libtool-bin curl cmake gperf gawk flex bison nano xxd fakeroot \
         cpio git python-docutils gettext automake autopoint texinfo build-essential help2man \
         pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget
 
     - name: Clone source code
       run: |
-        sudo git clone --depth=1 https://github.com/hanwckf/rt-n56u.git /opt/rt-n56u
+        git clone --depth=1 https://github.com/hanwckf/rt-n56u.git /opt/rt-n56u
         cd /opt/rt-n56u/toolchain-mipsel
-        sudo ./dl_toolchain.sh
+        ./dl_toolchain.sh
 
     - name: Build Firmware
       run: |
         mv -f PSG1218_nano.config /opt/rt-n56u/trunk/configs/templates/PSG1218_nano.config
         cd /opt/rt-n56u/trunk
         ./clear_tree
-        ./build_firmware_modify PSG1218_nano
+        fakeroot ./build_firmware_modify PSG1218_nano
         mkdir -p /opt/images
         mv -f images/*.trx /opt/images/
 
