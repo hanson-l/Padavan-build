@@ -35,7 +35,6 @@ jobs:
       run: |
         mv -f PSG1218_nano.config /opt/rt-n56u/trunk/configs/templates/PSG1218_nano.config
         cd /opt/rt-n56u/trunk
-        ./clear_tree
         fakeroot ./build_firmware_modify PSG1218_nano
         mkdir -p /opt/images
         mv -f images/*.trx /opt/images/
